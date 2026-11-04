@@ -1,0 +1,23 @@
+{
+  "name": "pulseboard",
+  "private": true,
+  "version": "0.1.0",
+  "workspaces": ["apps/*", "packages/*"],
+  "scripts": {
+    "dev": "npm run build -w @pulseboard/sdk && concurrently -n web,worker -c blue,magenta \"npm run dev -w @pulseboard/web\" \"npm run dev -w @pulseboard/worker\"",
+    "build": "npm run build -w @pulseboard/sdk && npm run build -w @pulseboard/web",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "test": "vitest run",
+    "db:generate": "npm run db:generate -w @pulseboard/core",
+    "db:migrate": "npm run db:migrate -w @pulseboard/core",
+    "seed": "tsx scripts/seed.ts"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "concurrently": "^9.1.0",
+    "tsx": "^4.19.0",
+    "typescript": "5.9.3",
+    "vitest": "^3.2.0"
+  },
+  "engines": { "node": ">=20.9" }
+}

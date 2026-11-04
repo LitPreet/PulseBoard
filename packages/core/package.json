@@ -1,0 +1,30 @@
+{
+  "name": "@pulseboard/core",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./schema": "./src/schema.ts",
+    "./db": "./src/db.ts",
+    "./analytics": "./src/analytics/index.ts",
+    "./ingest": "./src/ingest/index.ts",
+    "./redis": "./src/redis.ts"
+  },
+  "scripts": {
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "tsx src/migrate.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "drizzle-orm": "^0.45.0",
+    "ioredis": "^5.6.0",
+    "pg": "^8.13.0",
+    "zod": "^4.0.0"
+  },
+  "devDependencies": {
+    "@electric-sql/pglite": "^0.3.0",
+    "@types/pg": "^8.11.0",
+    "drizzle-kit": "^0.31.0"
+  }
+}

@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Acme Notes — PulseBoard SDK demo</title>
+    <style>
+      :root { --bg:#fafafa; --fg:#18181b; --muted:#71717a; --card:#fff; --border:#e4e4e7; --accent:#5b5bd6; }
+      @media (prefers-color-scheme: dark) { :root { --bg:#0c0c0f; --fg:#ececf1; --muted:#9b9ba6; --card:#141418; --border:#2a2a31; --accent:#8b8bf5; } }
+      * { box-sizing: border-box; }
+      body { margin:0; font-family: ui-sans-serif, system-ui, sans-serif; background:var(--bg); color:var(--fg); }
+      header { display:flex; gap:16px; align-items:center; padding:14px 20px; border-bottom:1px solid var(--border); background:var(--card); flex-wrap:wrap; }
+      header strong { margin-right:auto; }
+      nav a { color:var(--muted); text-decoration:none; margin-right:12px; } nav a:hover { color:var(--fg); }
+      main { max-width:720px; margin:0 auto; padding:32px 16px; }
+      .card { background:var(--card); border:1px solid var(--border); border-radius:10px; padding:20px; margin-bottom:16px; }
+      button { font:inherit; padding:8px 14px; border-radius:8px; border:1px solid var(--border); background:var(--card); color:var(--fg); cursor:pointer; margin:4px 6px 4px 0; }
+      button.primary { background:var(--accent); color:#fff; border-color:transparent; }
+      input { font:inherit; padding:8px 10px; border-radius:8px; border:1px solid var(--border); background:var(--bg); color:var(--fg); width:100%; max-width:260px; }
+      code { font-size:12px; color:var(--muted); word-break:break-all; }
+      .warn { color:#d97706; }
+    </style>
+  </head>
+  <body>
+    <header>
+      <strong>📝 Acme Notes</strong>
+      <nav>
+        <a href="/home" data-spa>Home</a>
+        <a href="/pricing" data-spa>Pricing</a>
+        <a href="/docs" data-spa>Docs</a>
+      </nav>
+    </header>
+    <main>
+      <div class="card">
+        <h2 id="page-title" style="margin-top:0">Home</h2>
+        <p style="color:var(--muted)">
+          A fake SaaS wired to PulseBoard. Click around and watch <em>Live events</em> in your dashboard.
+          Navigation above is client-side (pushState), so each click is a <code>$pageview</code>.
+        </p>
+        <p id="status"></p>
+      </div>
+      <div class="card">
+        <h3 style="margin-top:0">Activation funnel</h3>
+        <button class="primary" data-event="signed_up">1. Sign up</button>
+        <button data-event="created_note">2. Create note</button>
+        <button data-event="shared_note">3. Share note</button>
+        <button data-event="upgraded_plan" data-props='{"plan":"pro","mrr":29}'>4. Upgrade</button>
+      </div>
+      <div class="card">
+        <h3 style="margin-top:0">Identity</h3>
+        <input id="email" placeholder="you@company.com" />
+        <button id="identify">Identify</button>
+        <button id="reset">Log out (reset)</button>
+        <p><code id="ids"></code></p>
+      </div>
+    </main>
+    <script src="/sdk.js"></script>
+    <script>
+      const params = new URLSearchParams(location.search);
+      const key = params.get("key") || localStorage.getItem("pb_demo_key");
+      const status = document.getElementById("status");
+      if (!key) {
+        status.innerHTML = '<span class="warn">Add <code>?key=pk_…</code> (your project\'s public key) to the URL.</span>';
+      } else {
+        localStorage.setItem("pb_demo_key", key);
+        pulseboard.init(key, { apiHost: location.origin, flushIntervalMs: 1000, debug: true });
+        status.textContent = "Tracking with " + key.slice(0, 10) + "…";
+      }
+      const showIds = () =>
+        (document.getElementById("ids").textContent =
+          "distinct_id: " + pulseboard.getDistinctId() + "  ·  session: " + pulseboard.getSessionId());
+      if (key) showIds();
+
+      document.querySelectorAll("[data-spa]").forEach((a) =>
+        a.addEventListener("click", (e) => {
+          e.preventDefault();
+          history.pushState(null, "", a.getAttribute("href") + location.search);
+          document.getElementById("page-title").textContent = a.textContent;
+        }),
+      );
+      document.querySelectorAll("[data-event]").forEach((b) =>
+        b.addEventListener("click", () => pulseboard.capture(b.dataset.event, JSON.parse(b.dataset.props || "{}"))),
+      );
+      document.getElementById("identify").onclick = () => {
+        const email = document.getElementById("email").value.trim();
+        if (email) pulseboard.identify(email, { email });
+        showIds();
+      };
+      document.getElementById("reset").onclick = () => {
+        pulseboard.reset();
+        showIds();
+      };
+    </script>
+  </body>
+</html>

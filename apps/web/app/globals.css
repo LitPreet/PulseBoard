@@ -1,0 +1,92 @@
+@import "tailwindcss";
+
+:root {
+  --bg: #f7f7f8;
+  --surface: #ffffff;
+  --surface-2: #f1f1f3;
+  --border: #e4e4e7;
+  --text: #18181b;
+  --muted: #71717a;
+  --accent: #5b5bd6;
+  --accent-fg: #ffffff;
+  --accent-soft: #ededfc;
+  --danger: #dc2626;
+  --success: #16a34a;
+  --chart-1: #5b5bd6;
+  --chart-2: #0d9488;
+  --chart-3: #e11d48;
+  --chart-4: #d97706;
+  --chart-5: #2563eb;
+  --chart-6: #9333ea;
+  --grid: #ececef;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0c0c0f;
+    --surface: #141418;
+    --surface-2: #1c1c22;
+    --border: #2a2a31;
+    --text: #ececf1;
+    --muted: #9b9ba6;
+    --accent: #8b8bf5;
+    --accent-fg: #0c0c0f;
+    --accent-soft: #23234a;
+    --danger: #f87171;
+    --success: #4ade80;
+    --chart-1: #8b8bf5;
+    --chart-2: #2dd4bf;
+    --chart-3: #fb7185;
+    --chart-4: #fbbf24;
+    --chart-5: #60a5fa;
+    --chart-6: #c084fc;
+    --grid: #24242b;
+  }
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-border: var(--border);
+  --color-text: var(--text);
+  --color-muted: var(--muted);
+  --color-accent: var(--accent);
+  --color-accent-fg: var(--accent-fg);
+  --color-accent-soft: var(--accent-soft);
+  --color-danger: var(--danger);
+  --color-success: var(--success);
+  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+
+html,
+body {
+  background: var(--bg);
+  color: var(--text);
+}
+
+body {
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+* {
+  border-color: var(--border);
+}
+
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+@keyframes pb-flash {
+  from {
+    background: var(--accent-soft);
+  }
+  to {
+    background: transparent;
+  }
+}
+.flash-in {
+  animation: pb-flash 1.2s ease-out;
+}

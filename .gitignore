@@ -1,0 +1,12 @@
+node_modules/
+.next/
+dist/
+coverage/
+.env
+.env.local
+*.log
+.DS_Store
+apps/web/public/sdk.js
+apps/web/public/sdk.js.map
+next-env.d.ts
+*.tsbuildinfo
