@@ -87,7 +87,7 @@ docker-compose.yml   Postgres 17 + Redis 7
 - Public key (`pk_`) can only write events. Secret keys (`sk_`) are shown once, hashed at rest, project-scoped, revocable.
 - Ingestion is CORS-open, size-limited and rate-limited per key (Redis fixed window).
 
-## 7. Phases (one commit each)
+## 7. Phases
 
 1. **Scaffold** — workspaces, TS config, docker-compose, Drizzle schema + first migration.
 2. **Accounts** — auth, orgs, projects, invites, roles, API keys, app shell.
@@ -96,6 +96,8 @@ docker-compose.yml   Postgres 17 + Redis 7
 5. **Analytics engine** — trends/funnels/retention/sessions queries, tested against an in-process Postgres (PGlite).
 6. **Product UI** — overview, live events, insights, funnels, retention, sessions, dashboards with date filters, query API.
 7. **Polish** — demo seed script, README.
+
+Status: all seven phases are implemented and verified end to end (Docker Postgres + Redis, real HTTP ingestion, headless-browser checks of every page).
 
 ## 8. Testing strategy
 
