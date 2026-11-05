@@ -9,7 +9,8 @@
     "./db": "./src/db.ts",
     "./analytics": "./src/analytics/index.ts",
     "./ingest": "./src/ingest/index.ts",
-    "./redis": "./src/redis.ts"
+    "./redis": "./src/redis.ts",
+    "./crypto": "./src/crypto.ts"
   },
   "scripts": {
     "db:generate": "drizzle-kit generate",

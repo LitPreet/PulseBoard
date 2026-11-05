@@ -32,7 +32,7 @@ export async function runTrend(db: DB, projectId: string, q: TrendQuery, now = n
     db,
     sql`select ${iso(sql`g`)} as b from generate_series(
           date_trunc(${interval}, ${from.toISOString()}::timestamptz at time zone 'UTC'),
-          date_trunc(${interval}, ${to.toISOString()}::timestamptz at time zone 'UTC'),
+          date_trunc(${interval}, (${to.toISOString()}::timestamptz - interval '1 millisecond') at time zone 'UTC'),
           ${step}::interval) as g limit ${MAX_BUCKETS}`,
   );
   const labels = bucketRows.map((r) => r.b);
