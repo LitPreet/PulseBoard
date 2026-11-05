@@ -66,7 +66,7 @@ export default async function TeamPage(props: PageProps<"/p/[projectId]/team">) 
                   <form action={updateMemberRole} className="flex items-center gap-2">
                     <input type="hidden" name="orgId" value={org.id} />
                     <input type="hidden" name="userId" value={m.id} />
-                    <Select name="role" defaultValue={m.role} className="h-8 w-28 text-xs" aria-label={`Role for ${m.name}`}>
+                    <Select name="role" defaultValue={m.role} inline className="h-8 w-28 text-xs" aria-label={`Role for ${m.name}`}>
                       {ROLES.map((r) => (
                         <option key={r} value={r} title={ROLE_DESCRIPTIONS[r]}>
                           {r}

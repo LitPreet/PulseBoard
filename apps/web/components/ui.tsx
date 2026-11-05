@@ -30,15 +30,16 @@ export function Button({
 }
 
 export const inputClass =
-  "h-9 w-full rounded-md border border-border bg-surface px-3 text-sm text-text placeholder:text-muted outline-none focus:border-accent focus:ring-2 focus:ring-accent/20";
+  "h-9 rounded-md border border-border bg-surface px-3 text-sm text-text placeholder:text-muted outline-none focus:border-accent focus:ring-2 focus:ring-accent/20";
 
-export function Input({ className, ...props }: InputHTMLAttributes<HTMLInputElement>) {
-  return <input className={cx(inputClass, className)} {...props} />;
+/** Inputs are full-width unless `inline` is set (then size them with className). */
+export function Input({ className, inline, ...props }: InputHTMLAttributes<HTMLInputElement> & { inline?: boolean }) {
+  return <input className={cx(inputClass, !inline && "w-full", className)} {...props} />;
 }
 
-export function Select({ className, children, ...props }: SelectHTMLAttributes<HTMLSelectElement>) {
+export function Select({ className, children, inline, ...props }: SelectHTMLAttributes<HTMLSelectElement> & { inline?: boolean }) {
   return (
-    <select className={cx(inputClass, "pr-8", className)} {...props}>
+    <select className={cx(inputClass, !inline && "w-full", "pr-8", className)} {...props}>
       {children}
     </select>
   );
