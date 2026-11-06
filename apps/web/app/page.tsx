@@ -20,6 +20,7 @@ import { Logo } from "@/components/logo";
 import { buttonClass, cx } from "@/components/ui";
 import { ProductPreview } from "@/components/marketing/product-preview";
 import { LiveTicker } from "@/components/marketing/live-ticker";
+import { CountUp, Reveal, Spotlight } from "@/components/marketing/motion";
 
 export const metadata = {
   title: { absolute: "PulseBoard — Product analytics for small SaaS teams" },
@@ -38,6 +39,9 @@ export default async function LandingPage() {
 
   return (
     <div className="relative overflow-x-clip">
+      <noscript>
+        <style>{"[data-reveal]{opacity:1!important;transform:none!important;filter:none!important}[data-reveal] *{transform:none!important;opacity:1!important}"}</style>
+      </noscript>
       {/* ─── Header ─── */}
       <header className="sticky top-0 z-40 border-b border-border/60 bg-bg/70 backdrop-blur-xl">
         <div className="mx-auto flex h-16 max-w-6xl items-center gap-6 px-4 sm:px-6">
@@ -74,13 +78,13 @@ export default async function LandingPage() {
         {/* ─── Hero ─── */}
         <section className="relative">
           <div className="mk-grid pointer-events-none absolute inset-x-0 top-0 h-[720px]" aria-hidden />
-          <div className="mk-glow pointer-events-none absolute inset-x-0 -top-24 h-[620px]" aria-hidden />
+          <div className="mk-glow mk-drift pointer-events-none absolute inset-x-0 -top-24 h-[620px]" aria-hidden />
           <div className="relative mx-auto max-w-6xl px-4 pt-16 pb-20 text-center sm:px-6 sm:pt-24">
             <a
               href="#developers"
               className="mk-rise inline-flex items-center gap-2 rounded-full border border-border bg-surface/80 px-3 py-1 text-xs text-muted shadow-sm backdrop-blur transition hover:text-text"
             >
-              <span className="h-1.5 w-1.5 rounded-full bg-success" />
+              <span className="mk-ping h-1.5 w-1.5 rounded-full bg-success" />
               Self-hosted · Postgres + Redis · 2.9 kB SDK
               <ArrowRight size={12} />
             </a>
@@ -98,7 +102,7 @@ export default async function LandingPage() {
               live, and turn them into trends, funnels, retention and sessions — without a data team.
             </p>
             <div className="mk-rise mt-8 flex flex-wrap items-center justify-center gap-3" style={{ animationDelay: "240ms" }}>
-              <Link href={user ? "/app" : "/signup"} className={cx(buttonClass("primary"), "h-11 px-5 text-base")}>
+              <Link href={user ? "/app" : "/signup"} className={cx(buttonClass("primary"), "mk-sheen h-11 px-5 text-base shadow-lg shadow-accent/25")}>
                 {user ? "Open your dashboard" : "Start tracking — it's free"} <ArrowRight size={16} />
               </Link>
               <Link href={user ? "/app" : "/login"} className={cx(buttonClass("secondary"), "h-11 px-5 text-base")}>
@@ -110,7 +114,9 @@ export default async function LandingPage() {
             </p>
 
             <div className="mk-rise relative mx-auto mt-14 max-w-5xl" style={{ animationDelay: "360ms" }}>
-              <ProductPreview />
+              <div className="mk-float">
+                <ProductPreview />
+              </div>
               <p className="mt-3 text-xs text-muted">Illustrative preview with sample data.</p>
             </div>
           </div>
@@ -119,19 +125,21 @@ export default async function LandingPage() {
         {/* ─── Highlights ─── */}
         <section className="border-y border-border bg-surface/50">
           <dl className="mx-auto grid max-w-6xl grid-cols-2 gap-px px-4 sm:px-6 md:grid-cols-4">
-            {[
-              ["2.9 kB", "gzipped browser SDK"],
-              ["~1 second", "from click to live stream"],
-              ["0 ms", "of Postgres on the ingest path"],
-              ["4 roles", "owner, admin, member, viewer"],
-            ].map(([value, label]) => (
-              <div key={label} className="px-2 py-8 text-center">
+            {(
+              [
+                [<CountUp key="a" to={2.9} decimals={1} suffix=" kB" />, "gzipped browser SDK"],
+                [<CountUp key="b" to={1} prefix="~" suffix=" second" duration={900} />, "from click to live stream"],
+                [<CountUp key="c" to={0} suffix=" ms" />, "of Postgres on the ingest path"],
+                [<CountUp key="d" to={4} suffix=" roles" duration={900} />, "owner, admin, member, viewer"],
+              ] as const
+            ).map(([value, label], i) => (
+              <Reveal key={label} delay={i * 90} className="px-2 py-8 text-center">
                 <dt className="sr-only">{label}</dt>
                 <dd>
-                  <span className="tabular block text-2xl font-semibold tracking-tight sm:text-3xl">{value}</span>
+                  <span className="block text-2xl font-semibold tracking-tight sm:text-3xl">{value}</span>
                   <span className="mt-1 block text-sm text-muted">{label}</span>
                 </dd>
-              </div>
+              </Reveal>
             ))}
           </dl>
         </section>
@@ -143,19 +151,19 @@ export default async function LandingPage() {
             title="Everything you need to answer product questions"
             body="The core of PostHog and Mixpanel, sized for teams who want answers this afternoon — not a six-week rollout."
           />
-          <div className="mt-14 grid gap-4 md:grid-cols-6">
+          <Spotlight className="mt-14 grid gap-4 md:grid-cols-6">
             <FeatureCard className="md:col-span-4" icon={Activity} title="Live event stream" body="See every event within about a second of it happening. Filter by event, user or page, pause the feed, and open any event's properties.">
               <div className="overflow-hidden rounded-lg border border-border bg-bg/60">
                 <LiveTicker rows={4} />
               </div>
             </FeatureCard>
-            <FeatureCard className="md:col-span-2" icon={Filter} title="Funnels" body="Ordered steps with a conversion window. See exactly where people drop off and how long each step takes.">
+            <FeatureCard className="md:col-span-2" delay={120} icon={Filter} title="Funnels" body="Ordered steps with a conversion window. See exactly where people drop off and how long each step takes.">
               <div className="space-y-2">
                 {[100, 72, 31, 8].map((p, i) => (
                   <div key={p} className="flex items-center gap-2">
                     <span className="tabular w-4 text-xs text-muted">{i + 1}</span>
                     <div className="h-3 flex-1 overflow-hidden rounded-full bg-surface-2">
-                      <div className="h-full rounded-full" style={{ width: `${p}%`, background: "var(--chart-1)" }} />
+                      <div className="mk-grow h-full rounded-full" style={{ width: `${p}%`, background: "var(--chart-1)", ["--i" as string]: i }} />
                     </div>
                     <span className="tabular w-9 text-right text-xs text-muted">{p}%</span>
                   </div>
@@ -167,8 +175,9 @@ export default async function LandingPage() {
                 {[100, 44, 26, 18, 14, 12, 100, 47, 29, 20, 15, 0, 100, 41, 24, 17, 0, 0].map((v, i) => (
                   <div
                     key={i}
-                    className="h-5 rounded"
+                    className="mk-pop h-5 rounded"
                     style={{
+                      ["--i" as string]: i,
                       background:
                         v === 0 ? "var(--surface-2)" : `color-mix(in srgb, var(--chart-1) ${Math.round(10 + v * 0.9)}%, var(--surface))`,
                     }}
@@ -176,10 +185,10 @@ export default async function LandingPage() {
                 ))}
               </div>
             </FeatureCard>
-            <FeatureCard className="md:col-span-2" icon={BarChart3} title="Trends & breakdowns" body="Count events or unique users by hour, day, week or month. Break down by browser, referrer, plan — any property.">
+            <FeatureCard className="md:col-span-2" delay={120} icon={BarChart3} title="Trends & breakdowns" body="Count events or unique users by hour, day, week or month. Break down by browser, referrer, plan — any property.">
               <div className="flex h-16 items-end gap-1">
                 {[38, 52, 45, 60, 58, 72, 66, 80, 76, 92, 88, 100].map((v, i) => (
-                  <div key={i} className="flex flex-1 flex-col justify-end gap-px" style={{ height: `${v}%` }}>
+                  <div key={i} className="mk-grow-y flex flex-1 flex-col justify-end gap-px" style={{ height: `${v}%`, ["--i" as string]: i }}>
                     <div className="rounded-t-sm" style={{ height: "45%", background: "var(--chart-1)" }} />
                     <div style={{ height: "35%", background: "var(--chart-2)" }} />
                     <div style={{ height: "20%", background: "var(--chart-3)" }} />
@@ -187,14 +196,14 @@ export default async function LandingPage() {
                 ))}
               </div>
             </FeatureCard>
-            <FeatureCard className="md:col-span-2" icon={MonitorPlay} title="Sessions" body="Duration, pages, bounce rate and device for every visit — plus a step-by-step timeline of what happened.">
+            <FeatureCard className="md:col-span-2" delay={240} icon={MonitorPlay} title="Sessions" body="Duration, pages, bounce rate and device for every visit — plus a step-by-step timeline of what happened.">
               <ol className="space-y-1.5 text-xs">
                 {[
                   ["+0s", "Pageview", "/pricing"],
                   ["+42s", "Pageview", "/signup"],
                   ["+1m 9s", "signed_up", "via google"],
-                ].map(([t, e, d]) => (
-                  <li key={t} className="flex items-center gap-2">
+                ].map(([t, e, d], i) => (
+                  <li key={t} className="mk-pop flex items-center gap-2" style={{ ["--i" as string]: i * 4 }}>
                     <span className="tabular w-12 text-right text-muted">{t}</span>
                     <span className="h-1.5 w-1.5 rounded-full bg-accent" />
                     <span className="font-medium">{e}</span>
@@ -204,8 +213,8 @@ export default async function LandingPage() {
               </ol>
             </FeatureCard>
             <FeatureCard className="md:col-span-3" icon={LayoutDashboard} title="Dashboards with one date filter" body="Save any trend, funnel or retention chart to a dashboard. Change the date range once and every tile re-runs. Links are shareable because filters live in the URL." />
-            <FeatureCard className="md:col-span-3" icon={Users} title="Teams, roles & API keys" body="Organizations with multiple projects, invite links, and owner / admin / member / viewer roles. A write-only public key for the SDK and hashed secret keys for the query API." />
-          </div>
+            <FeatureCard className="md:col-span-3" delay={120} icon={Users} title="Teams, roles & API keys" body="Organizations with multiple projects, invite links, and owner / admin / member / viewer roles. A write-only public key for the SDK and hashed secret keys for the query API." />
+          </Spotlight>
         </section>
 
         {/* ─── How it works ─── */}
@@ -219,7 +228,7 @@ export default async function LandingPage() {
                   ["Add one script", "Pageviews — including single-page-app navigation — are tracked automatically. Capture anything else with one line."],
                   ["Ask questions", "Build trends, funnels and retention charts, then pin them to a dashboard your whole team can use."],
                 ].map(([title, body], i) => (
-                  <li key={title} className="flex gap-4">
+                  <Reveal as="li" key={title} delay={i * 140} className="flex gap-4">
                     <span className="tabular flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-border bg-surface text-sm font-semibold text-accent">
                       {i + 1}
                     </span>
@@ -227,10 +236,11 @@ export default async function LandingPage() {
                       <h3 className="font-semibold">{title}</h3>
                       <p className="mt-1 text-sm text-muted">{body}</p>
                     </div>
-                  </li>
+                  </Reveal>
                 ))}
               </ol>
             </div>
+            <Reveal delay={150}>
             <CodeWindow title="index.html">
               <Line c="muted">{"<!-- 1. Load the SDK -->"}</Line>
               <Line>
@@ -257,6 +267,7 @@ export default async function LandingPage() {
                 pulseboard.<T c="chart-1">identify</T>(user.id, {"{ "}email: user.email {"});"}
               </Line>
             </CodeWindow>
+            </Reveal>
           </div>
         </section>
 
@@ -267,35 +278,39 @@ export default async function LandingPage() {
             title="An architecture you can actually reason about"
             body="One Next.js app, one worker, Postgres and Redis. No black boxes, no per-event bill."
           />
-          <div className="mt-14 flex flex-wrap items-center justify-center gap-2 text-sm">
+          <Reveal className="mt-14 flex flex-wrap items-center justify-center gap-2 text-sm">
             {["Browser SDK", "Ingest API", "Redis Stream", "Worker", "PostgreSQL", "Dashboard"].map((step, i, all) => (
               <span key={step} className="flex items-center gap-2">
-                <span className="rounded-full border border-border bg-surface px-4 py-2 font-medium shadow-sm">{step}</span>
-                {i < all.length - 1 && <ArrowRight size={16} className="text-muted" aria-hidden />}
+                <span className="mk-flow rounded-full border border-border bg-surface px-4 py-2 font-medium shadow-sm" style={{ ["--i" as string]: i }}>
+                  {step}
+                </span>
+                {i < all.length - 1 && (
+                  <ArrowRight size={16} className="mk-arrow text-accent" style={{ ["--i" as string]: i }} aria-hidden />
+                )}
               </span>
             ))}
-          </div>
-          <div className="mt-14 grid gap-4 md:grid-cols-3">
+          </Reveal>
+          <Spotlight className="mt-14 grid gap-4 md:grid-cols-3">
             <MiniFeature icon={Zap} title="Fast, safe ingestion">
               Events are validated, rate-limited and queued in Redis in milliseconds. Traffic spikes never reach your database.
             </MiniFeature>
-            <MiniFeature icon={ShieldCheck} title="Exactly-once results">
+            <MiniFeature icon={ShieldCheck} title="Exactly-once results" delay={100}>
               Client-generated UUIDv7 ids make retries idempotent, and crashed workers&apos; messages are reclaimed automatically.
             </MiniFeature>
-            <MiniFeature icon={Database} title="Plain Postgres">
+            <MiniFeature icon={Database} title="Plain Postgres" delay={200}>
               Funnels and retention are parameterized SQL over indexed tables — easy to inspect, back up and extend.
             </MiniFeature>
-            <MiniFeature icon={Users} title="Identity merging">
+            <MiniFeature icon={Users} title="Identity merging" delay={0}>
               Anonymous visitors are merged into the signed-in user on <code className="font-mono text-xs">identify</code>, across devices.
             </MiniFeature>
-            <MiniFeature icon={KeyRound} title="Query API">
+            <MiniFeature icon={KeyRound} title="Query API" delay={100}>
               Pull any trend, funnel or retention result into your own backend with a secret key.
             </MiniFeature>
-            <MiniFeature icon={Code2} title="Typed end to end">
+            <MiniFeature icon={Code2} title="Typed end to end" delay={200}>
               TypeScript and zod schemas shared by the SDK, the API and the UI — the same validator everywhere.
             </MiniFeature>
-          </div>
-          <div className="mx-auto mt-10 max-w-3xl">
+          </Spotlight>
+          <Reveal className="mx-auto mt-10 max-w-3xl">
             <CodeWindow title="terminal">
               <Line>
                 <T c="muted">$</T> curl -X POST https://pulse.yourapp.com/api/v1/query \
@@ -307,13 +322,13 @@ export default async function LandingPage() {
                 {"    "}-d <T c="chart-3">{`'{"query":{"type":"funnel","steps":[{"event":"signed_up"},{"event":"upgraded_plan"}]}}'`}</T>
               </Line>
             </CodeWindow>
-          </div>
+          </Reveal>
         </section>
 
         {/* ─── Final CTA ─── */}
         <section className="px-4 pb-24 sm:px-6">
-          <div className="relative mx-auto max-w-5xl overflow-hidden rounded-2xl border border-border bg-surface px-6 py-16 text-center shadow-sm sm:px-12">
-            <div className="mk-glow pointer-events-none absolute inset-0 opacity-70" aria-hidden />
+          <Reveal className="relative mx-auto max-w-5xl overflow-hidden rounded-2xl border border-border bg-surface px-6 py-16 text-center shadow-sm sm:px-12">
+            <div className="mk-glow mk-drift pointer-events-none absolute inset-0 opacity-70" aria-hidden />
             <div className="relative">
               <h2 className="mx-auto max-w-2xl text-3xl font-semibold tracking-tight text-balance sm:text-4xl">
                 Ship the feature. <span className="mk-gradient-text">Know if it worked.</span>
@@ -322,7 +337,7 @@ export default async function LandingPage() {
                 Create a free account, paste one snippet, and see your first events in under five minutes.
               </p>
               <div className="mt-8 flex flex-wrap justify-center gap-3">
-                <Link href={user ? "/app" : "/signup"} className={cx(buttonClass("primary"), "h-11 px-5 text-base")}>
+                <Link href={user ? "/app" : "/signup"} className={cx(buttonClass("primary"), "mk-sheen h-11 px-5 text-base shadow-lg shadow-accent/25")}>
                   {user ? "Open your dashboard" : "Create your account"} <ArrowRight size={16} />
                 </Link>
                 {!user && (
@@ -332,7 +347,7 @@ export default async function LandingPage() {
                 )}
               </div>
             </div>
-          </div>
+          </Reveal>
         </section>
       </main>
 
@@ -364,11 +379,11 @@ export default async function LandingPage() {
 
 function SectionHeading({ eyebrow, title, body, align = "center" }: { eyebrow: string; title: string; body?: string; align?: "center" | "left" }) {
   return (
-    <div className={align === "center" ? "mx-auto max-w-2xl text-center" : "max-w-xl"}>
+    <Reveal className={align === "center" ? "mx-auto max-w-2xl text-center" : "max-w-xl"}>
       <p className="text-sm font-semibold text-accent">{eyebrow}</p>
       <h2 className="mt-2 text-3xl font-semibold tracking-tight text-balance sm:text-4xl">{title}</h2>
       {body && <p className="mt-4 text-pretty text-muted">{body}</p>}
-    </div>
+    </Reveal>
   );
 }
 
@@ -377,42 +392,45 @@ function FeatureCard({
   title,
   body,
   className,
+  delay = 0,
   children,
 }: {
   icon: typeof Activity;
   title: string;
   body: string;
   className?: string;
+  delay?: number;
   children?: ReactNode;
 }) {
   return (
-    <div
+    <Reveal
+      delay={delay}
       className={cx(
-        "group flex flex-col gap-5 rounded-xl border border-border bg-surface p-6 transition hover:-translate-y-0.5 hover:border-accent/50 hover:shadow-lg",
+        "mk-spot group flex flex-col gap-5 rounded-xl border border-border bg-surface p-6 hover:border-accent/50 hover:shadow-lg",
         className,
       )}
     >
       <div>
-        <span className="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-accent-soft text-accent">
+        <span className="mk-icon inline-flex h-9 w-9 items-center justify-center rounded-lg bg-accent-soft text-accent">
           <Icon size={18} />
         </span>
         <h3 className="mt-4 font-semibold">{title}</h3>
         <p className="mt-1.5 text-sm text-muted">{body}</p>
       </div>
       {children && <div className="mt-auto">{children}</div>}
-    </div>
+    </Reveal>
   );
 }
 
-function MiniFeature({ icon: Icon, title, children }: { icon: typeof Activity; title: string; children: ReactNode }) {
+function MiniFeature({ icon: Icon, title, delay = 0, children }: { icon: typeof Activity; title: string; delay?: number; children: ReactNode }) {
   return (
-    <div className="rounded-xl border border-border bg-surface p-5">
+    <Reveal delay={delay} className="mk-spot rounded-xl border border-border bg-surface p-5 hover:border-accent/50">
       <div className="flex items-center gap-2">
-        <Icon size={16} className="text-accent" />
+        <Icon size={16} className="mk-icon text-accent" />
         <h3 className="text-sm font-semibold">{title}</h3>
       </div>
       <p className="mt-2 text-sm text-muted">{children}</p>
-    </div>
+    </Reveal>
   );
 }
 
