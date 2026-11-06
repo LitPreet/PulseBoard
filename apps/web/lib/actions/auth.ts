@@ -18,7 +18,7 @@ const signupSchema = z.object({
 
 function safeNext(next: FormDataEntryValue | null) {
   const v = typeof next === "string" ? next : "";
-  return v.startsWith("/") && !v.startsWith("//") ? v : "/";
+  return v.startsWith("/") && !v.startsWith("//") ? v : "/app";
 }
 
 export async function signup(_: FormState, form: FormData): Promise<FormState> {
@@ -61,7 +61,7 @@ export async function signup(_: FormState, form: FormData): Promise<FormState> {
   });
 
   await createSession(userId);
-  redirect("/");
+  redirect("/app");
 }
 
 const loginSchema = z.object({

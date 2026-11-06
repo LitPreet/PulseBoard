@@ -96,7 +96,7 @@ export async function removeMember(form: FormData) {
     .delete(schema.memberships)
     .where(and(eq(schema.memberships.orgId, orgId), eq(schema.memberships.userId, userId)));
   revalidatePath("/p", "layout");
-  if (leavingSelf) redirect("/");
+  if (leavingSelf) redirect("/app");
 }
 
 /** Accept an invite as the signed-in user. */
@@ -114,7 +114,7 @@ export async function acceptInvite(form: FormData) {
         gt(schema.invites.expiresAt, new Date()),
       ),
     );
-  if (!invite) redirect("/?error=invite");
+  if (!invite) redirect("/app?error=invite");
   await db.transaction(async (tx) => {
     await tx
       .insert(schema.memberships)
@@ -123,5 +123,5 @@ export async function acceptInvite(form: FormData) {
     await tx.update(schema.invites).set({ acceptedAt: new Date() }).where(eq(schema.invites.id, invite.id));
   });
   const [project] = await db.select().from(schema.projects).where(eq(schema.projects.orgId, invite.orgId)).limit(1);
-  redirect(project ? `/p/${project.id}` : "/");
+  redirect(project ? `/p/${project.id}` : "/app");
 }

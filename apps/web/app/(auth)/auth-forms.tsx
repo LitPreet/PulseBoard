@@ -10,7 +10,7 @@ export function LoginForm({ next }: { next?: string }) {
   const [state, action] = useActionState(login, undefined);
   return (
     <form action={action} className="space-y-4">
-      <input type="hidden" name="next" value={next ?? "/"} />
+      <input type="hidden" name="next" value={next ?? "/app"} />
       <Field label="Email">
         <Input name="email" type="email" autoComplete="email" required autoFocus />
       </Field>

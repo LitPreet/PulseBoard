@@ -6,7 +6,7 @@ export const metadata = { title: "Create account" };
 
 export default async function SignupPage(props: PageProps<"/signup">) {
   const { invite, email } = await props.searchParams;
-  if (await getCurrentUser()) redirect(typeof invite === "string" ? `/invite/${invite}` : "/");
+  if (await getCurrentUser()) redirect(typeof invite === "string" ? `/invite/${invite}` : "/app");
   return (
     <>
       <h1 className="mb-1 text-lg font-semibold">Create your account</h1>

@@ -7,7 +7,7 @@ export const metadata = { title: "Sign in" };
 export default async function LoginPage(props: PageProps<"/login">) {
   const { next: rawNext } = await props.searchParams;
   const next = typeof rawNext === "string" && rawNext.startsWith("/") && !rawNext.startsWith("//") ? rawNext : undefined;
-  if (await getCurrentUser()) redirect(next ?? "/");
+  if (await getCurrentUser()) redirect(next ?? "/app");
   return (
     <>
       <h1 className="mb-1 text-lg font-semibold">Welcome back</h1>
